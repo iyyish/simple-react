@@ -1,16 +1,15 @@
 import React from 'react'
-import { Navigate, RouteObject } from 'react-router-dom'
+import { RouteObject } from 'react-router-dom'
 
 const Home = React.lazy(() => import('@/pages/Home'))
 const Login = React.lazy(() => import('@/pages/Login'))
+const User = React.lazy(() => import('@/pages/User'))
+
 const routes: RouteObject[] = [
   {
     path: '/',
-    element: <Navigate to="/home" />,
-  },
-  {
-    path: '/home',
     element: <Home />,
+    children: [{ path: 'user', element: <User /> }],
   },
   {
     path: '/login',
