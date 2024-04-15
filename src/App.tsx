@@ -1,12 +1,12 @@
+import { Suspense } from 'react'
+import { routes } from './router'
+import { useRoutes } from 'react-router'
+import { Spin } from 'antd'
 import './App.css'
-import Login from './pages/Login'
 
 const App = () => {
-  return (
-    <>
-      <Login />
-    </>
-  )
+  const element = useRoutes(routes)
+  return <Suspense fallback={<Spin></Spin>}>{element}</Suspense>
 }
 
 export default App

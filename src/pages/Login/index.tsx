@@ -1,13 +1,36 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Card, Flex, Form, Input, Space, message } from 'antd'
 import { requestCaptcha, requestLogin } from '@/api'
+import { useNavigate } from 'react-router'
 import './style.less'
 
 const Login: React.FC = () => {
   //hooks
   const [messageApi, contextHoler] = message.useMessage()
-
-  const doFinish = (values: any) => {}
+  const navigate = useNavigate()
+  //state
+  const [loading, setLoading] = useState(false)
+  //component
+  const doFinish = async (values: any) => {
+    try {
+      setLoading(true)
+      const {
+        code,
+        message,
+        data: { accessToken, refreshToken },
+      } = await requestLogin(values)
+      if (code == 200) {
+        console.log('@登录成功', accessToken, refreshToken)
+        navigate('/home')
+      } else {
+        messageApi.error({ content: message, duration: 1.5 })
+      }
+    } catch (error: any) {
+      messageApi.error({ content: error.message, duration: 1.5 })
+    } finally {
+      setLoading(false)
+    }
+  }
   const doCaptcha = () => {
     messageApi
       .open({
@@ -50,7 +73,13 @@ const Login: React.FC = () => {
             </Space.Compact>
           </Form.Item>
           <Form.Item>
-            <Button htmlType="submit" type="primary" size="large" block>
+            <Button
+              htmlType="submit"
+              type="primary"
+              size="large"
+              loading={loading}
+              block
+            >
               Login
             </Button>
           </Form.Item>
