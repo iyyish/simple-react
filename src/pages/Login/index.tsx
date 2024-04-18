@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Button, Card, Flex, Form, Input, Space, message } from 'antd'
-import { requestCaptcha, requestLogin } from '@/api'
+import { requestCaptcha, requestLogin } from '@/services'
 import { useNavigate } from 'react-router'
+import { setItem } from '@/utils/token'
 import './style.less'
 
 let times = 5 //短信验证码倒计时
@@ -21,7 +22,9 @@ const Login: React.FC = () => {
       const res = await requestLogin(values)
       if (res.code == 200) {
         messageApi.success({ content: '登录成功.', duration: 1.5 })
-        navigate('/home')
+        //将登录用户信息存储到本地
+        setItem('access-token', res.data.accessToken)
+        navigate('/')
       } else {
         messageApi.error({ content: res.message, duration: 1.5 })
       }
